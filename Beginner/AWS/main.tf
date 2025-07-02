@@ -78,7 +78,7 @@ resource "aws_lambda_function" "func" {
 }
 
 resource "aws_s3_bucket_notification" "bucket_notification" {
-  bucket = aws_s3_bucket.bucket.id
+  bucket = aws_s3_bucket.terraform_state.id
 
   lambda_function {
     lambda_function_arn = aws_lambda_function.func.arn
