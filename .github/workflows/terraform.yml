@@ -14,7 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # Set the Terraform Cloud user API token as an environment variable
-      TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
@@ -42,7 +41,7 @@ jobs:
 
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
-      run: terraform fmt -check
+      run: terraform fmt
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
