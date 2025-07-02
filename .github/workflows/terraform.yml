@@ -43,11 +43,11 @@ jobs:
     - name: Terraform Format
       run: terraform fmt
 
-    # Generates an execution plan for Terraform
-    - name: Terraform Plan
-      run: terraform plan
+    # # Generates an execution plan for Terraform
+    # - name: Terraform Plan
+    #   run: terraform plan # Disabled terraform plan step to avoid unnecessary execution
 
     # On push to "terraform-beginner", build or change infrastructure according to Terraform configuration files
     # - name: Terraform Apply
     #   if: github.ref == 'refs/heads/terraform-beginner'
-    #   run: terraform apply -auto-approve
+    #   run: terraform apply -auto-approve # Disabled terraform apply step to avoid unnecessary execution
