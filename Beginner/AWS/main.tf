@@ -66,7 +66,7 @@ resource "aws_lambda_permission" "allow_bucket" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.func.arn
   principal     = "s3.amazonaws.com"
-  source_arn    = aws_s3_bucket.bucket.arn
+  source_arn    = aws_s3_bucket.terraform_state.arn
 }
 
 resource "aws_lambda_function" "func" {
