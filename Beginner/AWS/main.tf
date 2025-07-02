@@ -1,4 +1,15 @@
 terraform {
+
+  # Configure the backend to use terraform remote for storing Terraform state
+  backend "remote" {
+    organization = "deora-devops"
+
+    workspaces {
+      name = "aws-devops"
+    }
+  }
+
+  # This block is used to specify the providers and their versions
   required_providers {
     aws = {
       source  = "hashicorp/aws"
