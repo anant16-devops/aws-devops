@@ -2,9 +2,9 @@ terraform {
 
   # Configure the backend to use terraform remote for storing Terraform state
   backend "remote" {
-    organization = var.terraform_organization
+    organization = "deora-devops"
     workspaces {
-      name = var.terraform_workspace
+      name = "aws-devops"
     }
   }
 
