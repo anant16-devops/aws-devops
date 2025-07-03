@@ -17,7 +17,7 @@ jobs:
     environment: production
 
     outputs:
-      container_image: ${{ steps.build-image.outputs.container_image }}
+      CONTAINER_IMAGE: ${{ steps.build-image.outputs.container_image }}
 
     steps:
     - id: step1
@@ -70,7 +70,7 @@ jobs:
       # Set the Terraform Cloud user API token as an environment variable
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      OUTPUT1: ${{needs.deploy.outputs.container_image}}
+      OUTPUT1: ${{needs.deploy.outputs.CONTAINER_IMAGE}}
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -100,7 +100,7 @@ jobs:
 
     - name: Create another-var.auto.tfvars
       run: |
-          echo "container_image = \"${{ needs.deploy.outputs.container_image }}\"" > another-var.auto.tfvars
+          echo "container_image="$OUTPUT1"" > another-var.auto.tfvars
 
     # # Generates an execution plan for Terraform
     - name: Terraform Plan
