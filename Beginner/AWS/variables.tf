@@ -8,6 +8,11 @@ variable "ecr_repository" {
   default     = "dummy-demo-repo"
 }
 
+variable "container_image" {
+  description = "The URI of the ECR image"
+  default     = "dummy-demo-repo:latest"
+}
+
 variable "s3_bucket_name" {
   description = "The name of the S3 bucket for Terraform state"
   default     = "anant-devops-iaac-tf-state" # REPLACE WITH YOUR BUCKET NAME

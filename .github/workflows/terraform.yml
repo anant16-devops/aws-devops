@@ -100,9 +100,9 @@ jobs:
 
     # # Generates an execution plan for Terraform
     - name: Terraform Plan
-      run: terraform plan # Disabled terraform plan step to avoid unnecessary execution
+      run: terraform plan -var="container_image=${{ steps.build-image.outputs.image }}"# Disabled terraform plan step to avoid unnecessary execution
 
     # On push to "terraform-beginner", build or change infrastructure according to Terraform configuration files
-    - name: Terraform Apply
-      if: github.ref == 'refs/heads/terraform-beginner'
-      run: terraform apply # Disabled terraform apply step to avoid unnecessary execution
+    # - name: Terraform Apply
+    #   if: github.ref == 'refs/heads/terraform-beginner'
+    #   run: terraform apply # Disabled terraform apply step to avoid unnecessary execution
