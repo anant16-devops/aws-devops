@@ -10,7 +10,7 @@ variable "ecr_repository" {
 
 variable "container_image" {
   description = "The URI of the ECR image"
-  default     = "dummy-demo-repo:latest"
+#   default     = "dummy-demo-repo:latest"
 }
 
 variable "s3_bucket_name" {
