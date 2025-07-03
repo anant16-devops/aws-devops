@@ -98,9 +98,13 @@ jobs:
     - name: Terraform Format
       run: terraform fmt
 
+    - name: Create terraform.auto.tfvars
+      run: |
+          echo "container_image = \"${{ needs.deploy.outputs.container_image }}\"" > ./Beginner/AWS/terraform.auto.tfvars
+
     # # Generates an execution plan for Terraform
     - name: Terraform Plan
-      run: terraform plan -var "container_image=${{ steps.build-image.outputs.image }}" # Disabled terraform plan step to avoid unnecessary execution
+      run: terraform plan # Disabled terraform plan step to avoid unnecessary execution
 
     # On push to "terraform-beginner", build or change infrastructure according to Terraform configuration files
     # - name: Terraform Apply
