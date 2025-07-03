@@ -88,11 +88,6 @@ resource "aws_lambda_function" "func" {
   image_uri     = var.container_image
   package_type  = "Image"
   role = aws_iam_role.iam_for_lambda.arn
-  environment {
-    variables = {
-      AWS_REGION = var.aws_region
-    }
-  }
 }
 
 resource "aws_s3_bucket_notification" "bucket_notification" {
