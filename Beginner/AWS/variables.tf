@@ -9,7 +9,8 @@ variable "ecr_repository" {
 }
 
 variable "container_image" {
-  description = "The URI of the ECR image"
+  description = "ECR image URI"
+  type        = string
 #   default     = "dummy-demo-repo:latest"
 }
 

@@ -91,18 +91,22 @@ jobs:
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
+      working-directory: Beginner/AWS
       run: terraform init
 
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
+      working-directory: Beginner/AWS
       run: terraform fmt
 
     - name: Create another-var.auto.tfvars
+      working-directory: Beginner/AWS
       run: |
-          echo "container_image = \"${{ needs.deploy.outputs.CONTAINER_IMAGE}}\"" > another-var.auto.tfvars
+          echo "container_image = \"${{ needs.deploy.outputs.CONTAINER_IMAGE }}\"" > var.auto.tfvars
 
     # # Generates an execution plan for Terraform
     - name: Terraform Plan
+      working-directory: Beginner/AWS
       run: terraform plan
 
     # On push to "terraform-beginner", build or change infrastructure according to Terraform configuration files
