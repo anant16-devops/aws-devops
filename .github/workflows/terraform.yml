@@ -69,6 +69,7 @@ jobs:
       # Set the Terraform Cloud user API token as an environment variable
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      OUTPUT1: ${{needs.deploy.outputs.container_image}}
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -76,11 +77,7 @@ jobs:
         shell: bash
         working-directory: Beginner/AWS
 
-    steps:
-    - env:
-        OUTPUT1: ${{needs.deploy.outputs.container_image}}
-        run: echo "$OUTPUT1" # Print the output from the deploy job to verify it is passed correctly
-    
+    steps:    
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v4
