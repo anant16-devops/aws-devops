@@ -2,9 +2,9 @@ terraform {
 
   # Configure the backend to use terraform remote for storing Terraform state
   backend "remote" {
-    organization = "deora-devops"
+    organization = var.terraform_organization
     workspaces {
-      name = "aws-devops"
+      name = var.terraform_workspace
     }
   }
 
@@ -23,7 +23,7 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "terraform_state" {
-  bucket        = "anant-devops-iaac-tf-state" # REPLACE WITH YOUR BUCKET NAME
+  bucket        = var.s3_bucket_name
   force_destroy = true
 }
 
@@ -79,7 +79,7 @@ resource "aws_lambda_function" "func" {
   function_name = "lambda_s3_reader"
   role          = aws_iam_role.iam_for_lambda.arn
   handler       = "s3_reader.lambda_handler"
-  runtime       = "python3.10"
+  runtime       = var.lambda_function_runtime
 }
 
 resource "aws_s3_bucket_notification" "bucket_notification" {
