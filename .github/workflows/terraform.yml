@@ -100,7 +100,7 @@ jobs:
 
     - name: Create terraform.auto.tfvars
       run: |
-          echo "container_image = \"${{ needs.deploy.outputs.container_image }}\"" > ./Beginner/AWS/terraform.auto.tfvars
+          echo "container_image = \"${{ needs.deploy.outputs.container_image }}\"" > terraform.auto.tfvars
 
     # # Generates an execution plan for Terraform
     - name: Terraform Plan
