@@ -15,7 +15,7 @@ variable "s3_bucket_name" {
 
 variable "lambda_function_runtime" {
   description = "The runtime for the Lambda function"
-  default     = "python3.11"
+  default     = "python3.9"
 }
 
 variable "terraform_organization" {
