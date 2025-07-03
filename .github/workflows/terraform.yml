@@ -107,7 +107,7 @@ jobs:
     # # Generates an execution plan for Terraform
     - name: Terraform Plan
       working-directory: Beginner/AWS
-      run: terraform plan
+      run: terraform plan -var-file=var.auto.tfvars
 
     # On push to "terraform-beginner", build or change infrastructure according to Terraform configuration files
     # - name: Terraform Apply
