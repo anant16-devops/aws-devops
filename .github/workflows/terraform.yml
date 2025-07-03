@@ -79,6 +79,8 @@ jobs:
     steps:
     - env:
         OUTPUT1: ${{needs.deploy.outputs.container_image}}
+        run: echo "$OUTPUT1" # Print the output from the deploy job to verify it is passed correctly
+    
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v4
