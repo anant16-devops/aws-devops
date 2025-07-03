@@ -100,7 +100,7 @@ jobs:
 
     - name: Create another-var.auto.tfvars
       run: |
-          echo "container_image="$OUTPUT1"" > another-var.auto.tfvars
+          echo "container_image = "$OUTPUT1"" > another-var.auto.tfvars
 
     # # Generates an execution plan for Terraform
     - name: Terraform Plan
