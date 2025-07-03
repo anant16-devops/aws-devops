@@ -17,7 +17,7 @@ jobs:
     environment: production
 
     outputs:
-      container_image: ${{ steps.build-image.outputs.image }}
+      container_image: ${{ steps.build-image.outputs.container_image }}
 
     steps:
     - id: step1
@@ -60,7 +60,7 @@ jobs:
         # Build a docker container and push it to ECR
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+        echo "container_image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
   terraform:
     name: 'Terraform'
@@ -98,9 +98,9 @@ jobs:
     - name: Terraform Format
       run: terraform fmt
 
-    - name: Create terraform.auto.tfvars
+    - name: Create another-var.auto.tfvars
       run: |
-          echo "container_image = \"${{ needs.deploy.outputs.container_image }}\"" > terraform.auto.tfvars
+          echo "container_image = \"${{ needs.deploy.outputs.container_image }}\"" > another-var.auto.tfvars
 
     # # Generates an execution plan for Terraform
     - name: Terraform Plan
