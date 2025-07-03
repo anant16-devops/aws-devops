@@ -1,4 +1,4 @@
-name: Deploy to Amazon ECS
+name: Deploy to Amazon ECR
 
 on:
   push:
@@ -37,8 +37,20 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        # Build a docker container and
-        # push it to ECR
+        
+        Create a new Amazon ECR repository if it does not exist
+        if ! aws ecr describe-repositories --repository-names $ECR_REPOSITORY --region $AWS_REGION 2>/dev/null; then
+          echo "Creating ECR repository: $ECR_REPOSITORY"
+          aws ecr create-repository \
+            --repository-name $ECR_REPOSITORY \
+            --image-tag-mutability IMMUTABLE \
+            --image-scanning-configuration scanOnPush=true \
+            --region eu-north-1
+        else
+          echo "ECR repository $ECR_REPOSITORY already exists."
+        fi
+        
+        # Build a docker container and push it to ECR
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
