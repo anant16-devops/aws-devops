@@ -1,0 +1,17 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password | docker login --username AWS --password-stdin $REPOSITORY_URI
+  build:
+    commands:
+      - echo Building the Docker image...
+      - docker build -t flask-nginx-app .
+      - docker tag flask-nginx-app:latest $REPOSITORY_URI:latest
+  post_build:
+    commands:
+      - echo Pushing the Docker image...
+      - docker push $REPOSITORY_URI:latest
+
