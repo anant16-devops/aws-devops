@@ -10,7 +10,7 @@ COPY . /app
 WORKDIR /app
 
 # Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r my-flask-app/app/requirements.txt
 
 # Copy app and NGINX config
 COPY nginx.conf /etc/nginx/nginx.conf
