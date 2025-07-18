@@ -5,73 +5,110 @@
 
 from aws_cdk import (
     Stack,
+    aws_s3 as s3,
     aws_codepipeline as codepipeline,
-    aws_codepipeline_actions as cpactions,
+    aws_codepipeline_actions as codepipeline_actions,
     aws_codebuild as codebuild,
-    aws_codedeploy as codedeploy,
+    aws_iam as iam, aws_ecr as ecr,
     SecretValue
 )
+
 from constructs import Construct
+
 
 class PipelineStack(Stack):
     def __init__(self, scope: Construct, id: str,
-                 build_project: codebuild.IProject,
                  github_owner: str,
                  github_repo: str,
+                 repo: ecr.Repository,
+                 code_deploy_group,
                  **kwargs):
         super().__init__(scope, id, **kwargs)
 
+        # Ensure the S3 bucket exists
+        artifacts_bucket = s3.Bucket(
+            self, "ArtifactsBucket", versioned=True)
+        
+        build_role = iam.Role(
+            self, "CodeBuildRole",
+            assumed_by=iam.ServicePrincipal("codebuild.amazonaws.com")
+        )
+
+        build_role.add_managed_policy(
+            iam.ManagedPolicy.from_aws_managed_policy_name("AmazonEC2ContainerRegistryPowerUser")
+        )
+        build_role.add_managed_policy(
+            iam.ManagedPolicy.from_aws_managed_policy_name("AmazonS3ReadOnlyAccess")
+        )
+
+
+        # Create CodeBuild project in the same stack
+        codebuild_project = codebuild.Project(
+            self, "FlaskAppDockerBuild",
+            role=build_role,
+            build_spec=codebuild.BuildSpec.from_source_filename("buildspec.yml"),
+            source=codebuild.Source.git_hub(
+                owner=github_owner,
+                repo=github_repo
+            ),
+            environment=codebuild.BuildEnvironment(
+                build_image=codebuild.LinuxBuildImage.STANDARD_7_0,
+                privileged=True,  # Required for Docker builds
+                compute_type=codebuild.ComputeType.SMALL
+            ),
+            environment_variables={
+                "REPOSITORY_URI": codebuild.BuildEnvironmentVariable(value=repo.repository_uri)
+            },
+            artifacts=codebuild.Artifacts.s3(
+                bucket=artifacts_bucket,
+                path="build-artifacts"
+            )
+        )
+        
         # Artifacts
-        source_output = codepipeline.Artifact()
-        build_output = codepipeline.Artifact()
+        source_output = codepipeline.Artifact("SourceOutput")
+        build_output = codepipeline.Artifact("BuildOutput")
 
         # Pipeline
         pipeline = codepipeline.Pipeline(
             self, "FlaskAppPipeline",
-            pipeline_name="FlaskAppDockerPipeline"
+            pipeline_name="FlaskAppDockerPipeline",
+            artifact_bucket=artifacts_bucket,
         )
 
         # Stage 1: Source from GitHub
         pipeline.add_stage(
             stage_name="Source",
             actions=[
-                cpactions.GitHubSourceAction(
+                codepipeline_actions.GitHubSourceAction(
                     action_name="GitHub_Source",
                     owner=github_owner,
                     repo=github_repo,
+                    output=source_output,
                     branch="main",
-                    oauth_token=SecretValue.secrets_manager("github-token"),
-                    output=source_output
-                )
+                    oauth_token=SecretValue.secrets_manager("my-github-token"),
+                    )
             ]
         )
-
         # Stage 2: Build Docker and push to ECR
         pipeline.add_stage(
             stage_name="Build",
             actions=[
-                cpactions.CodeBuildAction(
+                codepipeline_actions.CodeBuildAction(
                     action_name="Docker_Build_and_Push",
-                    project=build_project,
+                    project=codebuild_project,
                     input=source_output,
                     outputs=[build_output]
                 )
             ]
         )
-
         # Optionally, Stage 3: Deploy
         pipeline.add_stage(
             stage_name="Deploy",
             actions=[
-                cpactions.CodeDeployServerDeployAction(
+                codepipeline_actions.CodeDeployServerDeployAction(
                     action_name="CodeDeploy_EC2",
-                    deployment_group=codedeploy.ServerDeploymentGroup.from_server_deployment_group_attributes(
-                        self, "ImportedDeployGroup",
-                        application=codedeploy.ServerApplication.from_server_application_name(
-                            self, "ImportedApp", "FlaskAppEC2DeployApp"
-                        ),
-                        deployment_group_name="FlaskAppEC2Group"
-                    ),
+                    deployment_group=code_deploy_group,
                     input=build_output
                 )
             ]

@@ -1,0 +1,21 @@
+{
+  "version": "45.0.0",
+  "files": {
+    "0635c9a6de713ac84dac801b4bce8f8e050f06d9ed6d6e43687fbc3989904fc8": {
+      "displayName": "Ec2NetworkingStack Template",
+      "source": {
+        "path": "NetworkStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "837217115905-eu-north-1-b9c1959c": {
+          "bucketName": "cdk-hnb659fds-assets-837217115905-eu-north-1",
+          "objectKey": "0635c9a6de713ac84dac801b4bce8f8e050f06d9ed6d6e43687fbc3989904fc8.json",
+          "region": "eu-north-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::837217115905:role/cdk-hnb659fds-file-publishing-role-837217115905-eu-north-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

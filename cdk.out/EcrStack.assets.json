@@ -1,0 +1,21 @@
+{
+  "version": "45.0.0",
+  "files": {
+    "99e6737bd43fcbadd6d7db269e8dab0ff5aa7060a51b736774b33e1319a3056d": {
+      "displayName": "EcrStack Template",
+      "source": {
+        "path": "EcrStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "837217115905-eu-north-1-30130b2e": {
+          "bucketName": "cdk-hnb659fds-assets-837217115905-eu-north-1",
+          "objectKey": "99e6737bd43fcbadd6d7db269e8dab0ff5aa7060a51b736774b33e1319a3056d.json",
+          "region": "eu-north-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::837217115905:role/cdk-hnb659fds-file-publishing-role-837217115905-eu-north-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

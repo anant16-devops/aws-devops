@@ -1,0 +1,147 @@
+{
+ "Resources": {
+  "CodeDeployServiceRole897ED2CE": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "codedeploy.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSCodeDeployRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "DeployStack/CodeDeployServiceRole/Resource"
+   }
+  },
+  "FlaskAppDeployApp0250C340": {
+   "Type": "AWS::CodeDeploy::Application",
+   "Properties": {
+    "ApplicationName": "FlaskAppEC2DeployApp",
+    "ComputePlatform": "Server"
+   },
+   "Metadata": {
+    "aws:cdk:path": "DeployStack/FlaskAppDeployApp/Resource"
+   }
+  },
+  "FlaskAppDeployGroup4B8BC649": {
+   "Type": "AWS::CodeDeploy::DeploymentGroup",
+   "Properties": {
+    "ApplicationName": {
+     "Ref": "FlaskAppDeployApp0250C340"
+    },
+    "AutoRollbackConfiguration": {
+     "Enabled": true,
+     "Events": [
+      "DEPLOYMENT_FAILURE"
+     ]
+    },
+    "DeploymentConfigName": "CodeDeployDefault.AllAtOnce",
+    "DeploymentGroupName": "FlaskAppEC2Group",
+    "Ec2TagSet": {
+     "Ec2TagSetList": [
+      {
+       "Ec2TagGroup": [
+        {
+         "Key": "Name",
+         "Type": "KEY_AND_VALUE",
+         "Value": "FlaskAppEC2"
+        }
+       ]
+      }
+     ]
+    },
+    "ServiceRoleArn": {
+     "Fn::GetAtt": [
+      "CodeDeployServiceRole897ED2CE",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "DeployStack/FlaskAppDeployGroup/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/13Kyw6CMBCF4WdhX0aExL1o4tbAA5haxjhSOk0vEtL03Q2yMa7+nJOvhro6QFXI2ZdqGEtNd0h9kGoUcva3RHKC1LFGcXqYtVkoHnBAq3mB1KN7oztaq0nJQGxW9js3cP7yCU24OI52RX9XFr6BNqoRQys9ZtGh5+gUZnFdwpPNroF9DU3x8kSliybQhNBt/QB+MTmnxQAAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "DeployStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "ExportsOutputRefFlaskAppDeployApp0250C34037A17271": {
+   "Value": {
+    "Ref": "FlaskAppDeployApp0250C340"
+   },
+   "Export": {
+    "Name": "DeployStack:ExportsOutputRefFlaskAppDeployApp0250C34037A17271"
+   }
+  },
+  "ExportsOutputRefFlaskAppDeployGroup4B8BC6493FD18F61": {
+   "Value": {
+    "Ref": "FlaskAppDeployGroup4B8BC649"
+   },
+   "Export": {
+    "Name": "DeployStack:ExportsOutputRefFlaskAppDeployGroup4B8BC6493FD18F61"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

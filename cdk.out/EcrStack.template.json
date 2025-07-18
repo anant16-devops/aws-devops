@@ -1,0 +1,79 @@
+{
+ "Resources": {
+  "FlaskAppRepoCC445EC7": {
+   "Type": "AWS::ECR::Repository",
+   "Properties": {
+    "RepositoryName": "flask-nginx-app"
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "EcrStack/FlaskAppRepo/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/zPSMzIw0zNQTCwv1k1OydbNyUzSqw4uSUzO1kksL45PTS7Sqw5KLcgvzizJL6rUcU7LQ/Bqa3UCKksy8vP0jfUMjfSMFbOKMzN1i0rzSjJzU/WCIDQABt+hrWEAAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "EcrStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "ExportsOutputFnGetAttFlaskAppRepoCC445EC7Arn13BABF42": {
+   "Value": {
+    "Fn::GetAtt": [
+     "FlaskAppRepoCC445EC7",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "EcrStack:ExportsOutputFnGetAttFlaskAppRepoCC445EC7Arn13BABF42"
+   }
+  },
+  "ExportsOutputRefFlaskAppRepoCC445EC7A8FBFD43": {
+   "Value": {
+    "Ref": "FlaskAppRepoCC445EC7"
+   },
+   "Export": {
+    "Name": "EcrStack:ExportsOutputRefFlaskAppRepoCC445EC7A8FBFD43"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

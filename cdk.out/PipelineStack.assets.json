@@ -1,0 +1,21 @@
+{
+  "version": "45.0.0",
+  "files": {
+    "7e73ba975a1386edd8445d3950056b6c0c34f0a4ddd0f419bbd7df6314f0d8eb": {
+      "displayName": "PipelineStack Template",
+      "source": {
+        "path": "PipelineStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "837217115905-eu-north-1-4473a9cd": {
+          "bucketName": "cdk-hnb659fds-assets-837217115905-eu-north-1",
+          "objectKey": "7e73ba975a1386edd8445d3950056b6c0c34f0a4ddd0f419bbd7df6314f0d8eb.json",
+          "region": "eu-north-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::837217115905:role/cdk-hnb659fds-file-publishing-role-837217115905-eu-north-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

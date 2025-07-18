@@ -1,0 +1,758 @@
+{
+ "Resources": {
+  "ArtifactsBucket2AAC5544": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "VersioningConfiguration": {
+     "Status": "Enabled"
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "PipelineStack/ArtifactsBucket/Resource"
+   }
+  },
+  "CodeBuildRole728CBADE": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "codebuild.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/AmazonS3ReadOnlyAccess"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PipelineStack/CodeBuildRole/Resource"
+   }
+  },
+  "CodeBuildRoleDefaultPolicy829527DE": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:DeleteObject*",
+        "s3:PutObject",
+        "s3:PutObjectLegalHold",
+        "s3:PutObjectRetention",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionTagging",
+        "s3:Abort*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ArtifactsBucket2AAC5544",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ArtifactsBucket2AAC5544",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":logs:eu-north-1:837217115905:log-group:/aws/codebuild/",
+           {
+            "Ref": "FlaskAppDockerBuild77E71840"
+           }
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":logs:eu-north-1:837217115905:log-group:/aws/codebuild/",
+           {
+            "Ref": "FlaskAppDockerBuild77E71840"
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "codebuild:CreateReportGroup",
+        "codebuild:CreateReport",
+        "codebuild:UpdateReport",
+        "codebuild:BatchPutTestCases",
+        "codebuild:BatchPutCodeCoverages"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":codebuild:eu-north-1:837217115905:report-group/",
+          {
+           "Ref": "FlaskAppDockerBuild77E71840"
+          },
+          "-*"
+         ]
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "CodeBuildRoleDefaultPolicy829527DE",
+    "Roles": [
+     {
+      "Ref": "CodeBuildRole728CBADE"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PipelineStack/CodeBuildRole/DefaultPolicy/Resource"
+   }
+  },
+  "FlaskAppDockerBuild77E71840": {
+   "Type": "AWS::CodeBuild::Project",
+   "Properties": {
+    "Artifacts": {
+     "Location": {
+      "Ref": "ArtifactsBucket2AAC5544"
+     },
+     "NamespaceType": "BUILD_ID",
+     "OverrideArtifactName": true,
+     "Packaging": "ZIP",
+     "Path": "build-artifacts",
+     "Type": "S3"
+    },
+    "Cache": {
+     "Type": "NO_CACHE"
+    },
+    "EncryptionKey": "alias/aws/s3",
+    "Environment": {
+     "ComputeType": "BUILD_GENERAL1_SMALL",
+     "EnvironmentVariables": [
+      {
+       "Name": "REPOSITORY_URI",
+       "Type": "PLAINTEXT",
+       "Value": {
+        "Fn::Join": [
+         "",
+         [
+          {
+           "Fn::Select": [
+            4,
+            {
+             "Fn::Split": [
+              ":",
+              {
+               "Fn::ImportValue": "EcrStack:ExportsOutputFnGetAttFlaskAppRepoCC445EC7Arn13BABF42"
+              }
+             ]
+            }
+           ]
+          },
+          ".dkr.ecr.",
+          {
+           "Fn::Select": [
+            3,
+            {
+             "Fn::Split": [
+              ":",
+              {
+               "Fn::ImportValue": "EcrStack:ExportsOutputFnGetAttFlaskAppRepoCC445EC7Arn13BABF42"
+              }
+             ]
+            }
+           ]
+          },
+          ".",
+          {
+           "Ref": "AWS::URLSuffix"
+          },
+          "/",
+          {
+           "Fn::ImportValue": "EcrStack:ExportsOutputRefFlaskAppRepoCC445EC7A8FBFD43"
+          }
+         ]
+        ]
+       }
+      }
+     ],
+     "Image": "aws/codebuild/standard:7.0",
+     "ImagePullCredentialsType": "CODEBUILD",
+     "PrivilegedMode": true,
+     "Type": "LINUX_CONTAINER"
+    },
+    "ServiceRole": {
+     "Fn::GetAtt": [
+      "CodeBuildRole728CBADE",
+      "Arn"
+     ]
+    },
+    "Source": {
+     "BuildSpec": "buildspec.yml",
+     "Location": "https://github.com/anant16-devops/aws-devops.git",
+     "ReportBuildStatus": true,
+     "Type": "GITHUB"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PipelineStack/FlaskAppDockerBuild/Resource"
+   }
+  },
+  "FlaskAppPipelineRole780B808B": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "codepipeline.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PipelineStack/FlaskAppPipeline/Role/Resource"
+   }
+  },
+  "FlaskAppPipelineRoleDefaultPolicy653C09BF": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:DeleteObject*",
+        "s3:PutObject",
+        "s3:PutObjectLegalHold",
+        "s3:PutObjectRetention",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionTagging",
+        "s3:Abort*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ArtifactsBucket2AAC5544",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ArtifactsBucket2AAC5544",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "FlaskAppPipelineBuildDockerBuildandPushCodePipelineActionRole67DE4019",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "FlaskAppPipelineDeployCodeDeployEC2CodePipelineActionRoleA204F468",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "FlaskAppPipelineRoleDefaultPolicy653C09BF",
+    "Roles": [
+     {
+      "Ref": "FlaskAppPipelineRole780B808B"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PipelineStack/FlaskAppPipeline/Role/DefaultPolicy/Resource"
+   }
+  },
+  "FlaskAppPipelineA2C66A85": {
+   "Type": "AWS::CodePipeline::Pipeline",
+   "Properties": {
+    "ArtifactStore": {
+     "Location": {
+      "Ref": "ArtifactsBucket2AAC5544"
+     },
+     "Type": "S3"
+    },
+    "Name": "FlaskAppDockerPipeline",
+    "RoleArn": {
+     "Fn::GetAtt": [
+      "FlaskAppPipelineRole780B808B",
+      "Arn"
+     ]
+    },
+    "Stages": [
+     {
+      "Actions": [
+       {
+        "ActionTypeId": {
+         "Category": "Source",
+         "Owner": "ThirdParty",
+         "Provider": "GitHub",
+         "Version": "1"
+        },
+        "Configuration": {
+         "Owner": "anant16-devops",
+         "Repo": "aws-devops",
+         "Branch": "main",
+         "OAuthToken": "{{resolve:secretsmanager:my-github-token:SecretString:::}}",
+         "PollForSourceChanges": false
+        },
+        "Name": "GitHub_Source",
+        "OutputArtifacts": [
+         {
+          "Name": "SourceOutput"
+         }
+        ],
+        "RunOrder": 1
+       }
+      ],
+      "Name": "Source"
+     },
+     {
+      "Actions": [
+       {
+        "ActionTypeId": {
+         "Category": "Build",
+         "Owner": "AWS",
+         "Provider": "CodeBuild",
+         "Version": "1"
+        },
+        "Configuration": {
+         "ProjectName": {
+          "Ref": "FlaskAppDockerBuild77E71840"
+         }
+        },
+        "InputArtifacts": [
+         {
+          "Name": "SourceOutput"
+         }
+        ],
+        "Name": "Docker_Build_and_Push",
+        "OutputArtifacts": [
+         {
+          "Name": "BuildOutput"
+         }
+        ],
+        "RoleArn": {
+         "Fn::GetAtt": [
+          "FlaskAppPipelineBuildDockerBuildandPushCodePipelineActionRole67DE4019",
+          "Arn"
+         ]
+        },
+        "RunOrder": 1
+       }
+      ],
+      "Name": "Build"
+     },
+     {
+      "Actions": [
+       {
+        "ActionTypeId": {
+         "Category": "Deploy",
+         "Owner": "AWS",
+         "Provider": "CodeDeploy",
+         "Version": "1"
+        },
+        "Configuration": {
+         "ApplicationName": {
+          "Fn::ImportValue": "DeployStack:ExportsOutputRefFlaskAppDeployApp0250C34037A17271"
+         },
+         "DeploymentGroupName": {
+          "Fn::ImportValue": "DeployStack:ExportsOutputRefFlaskAppDeployGroup4B8BC6493FD18F61"
+         }
+        },
+        "InputArtifacts": [
+         {
+          "Name": "BuildOutput"
+         }
+        ],
+        "Name": "CodeDeploy_EC2",
+        "RoleArn": {
+         "Fn::GetAtt": [
+          "FlaskAppPipelineDeployCodeDeployEC2CodePipelineActionRoleA204F468",
+          "Arn"
+         ]
+        },
+        "RunOrder": 1
+       }
+      ],
+      "Name": "Deploy"
+     }
+    ]
+   },
+   "DependsOn": [
+    "FlaskAppPipelineRoleDefaultPolicy653C09BF",
+    "FlaskAppPipelineRole780B808B"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "PipelineStack/FlaskAppPipeline/Resource"
+   }
+  },
+  "FlaskAppPipelineSourceGitHubSourceWebhookResource1CAA58C9": {
+   "Type": "AWS::CodePipeline::Webhook",
+   "Properties": {
+    "Authentication": "GITHUB_HMAC",
+    "AuthenticationConfiguration": {
+     "SecretToken": "{{resolve:secretsmanager:my-github-token:SecretString:::}}"
+    },
+    "Filters": [
+     {
+      "JsonPath": "$.ref",
+      "MatchEquals": "refs/heads/{Branch}"
+     }
+    ],
+    "RegisterWithThirdParty": true,
+    "TargetAction": "GitHub_Source",
+    "TargetPipeline": {
+     "Ref": "FlaskAppPipelineA2C66A85"
+    },
+    "TargetPipelineVersion": 1
+   },
+   "Metadata": {
+    "aws:cdk:path": "PipelineStack/FlaskAppPipeline/Source/GitHub_Source/WebhookResource"
+   }
+  },
+  "FlaskAppPipelineBuildDockerBuildandPushCodePipelineActionRole67DE4019": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "FlaskAppPipelineRole780B808B",
+          "Arn"
+         ]
+        }
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PipelineStack/FlaskAppPipeline/Build/Docker_Build_and_Push/CodePipelineActionRole/Resource"
+   }
+  },
+  "FlaskAppPipelineBuildDockerBuildandPushCodePipelineActionRoleDefaultPolicyAF96CD37": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "codebuild:BatchGetBuilds",
+        "codebuild:StartBuild",
+        "codebuild:StopBuild"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "FlaskAppDockerBuild77E71840",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "FlaskAppPipelineBuildDockerBuildandPushCodePipelineActionRoleDefaultPolicyAF96CD37",
+    "Roles": [
+     {
+      "Ref": "FlaskAppPipelineBuildDockerBuildandPushCodePipelineActionRole67DE4019"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PipelineStack/FlaskAppPipeline/Build/Docker_Build_and_Push/CodePipelineActionRole/DefaultPolicy/Resource"
+   }
+  },
+  "FlaskAppPipelineDeployCodeDeployEC2CodePipelineActionRoleA204F468": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "FlaskAppPipelineRole780B808B",
+          "Arn"
+         ]
+        }
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PipelineStack/FlaskAppPipeline/Deploy/CodeDeploy_EC2/CodePipelineActionRole/Resource"
+   }
+  },
+  "FlaskAppPipelineDeployCodeDeployEC2CodePipelineActionRoleDefaultPolicyCFF5FA8F": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "codedeploy:GetApplicationRevision",
+        "codedeploy:RegisterApplicationRevision"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":codedeploy:eu-north-1:837217115905:application:",
+          {
+           "Fn::ImportValue": "DeployStack:ExportsOutputRefFlaskAppDeployApp0250C34037A17271"
+          }
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "codedeploy:CreateDeployment",
+        "codedeploy:GetDeployment"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":codedeploy:eu-north-1:837217115905:deploymentgroup:",
+          {
+           "Fn::ImportValue": "DeployStack:ExportsOutputRefFlaskAppDeployApp0250C34037A17271"
+          },
+          "/",
+          {
+           "Fn::ImportValue": "DeployStack:ExportsOutputRefFlaskAppDeployGroup4B8BC6493FD18F61"
+          }
+         ]
+        ]
+       }
+      },
+      {
+       "Action": "codedeploy:GetDeploymentConfig",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":codedeploy:eu-north-1:837217115905:deploymentconfig:CodeDeployDefault.AllAtOnce"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ArtifactsBucket2AAC5544",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ArtifactsBucket2AAC5544",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "FlaskAppPipelineDeployCodeDeployEC2CodePipelineActionRoleDefaultPolicyCFF5FA8F",
+    "Roles": [
+     {
+      "Ref": "FlaskAppPipelineDeployCodeDeployEC2CodePipelineActionRoleA204F468"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PipelineStack/FlaskAppPipeline/Deploy/CodeDeploy_EC2/CodePipelineActionRole/DefaultPolicy/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/03MMQ6DMAwF0LN0Dy4FqQdoLxDRoWMVgitMAkYkEUJR7l5BGDr952/LFVTlHcqLWl2hO1NYaiG+vNJGqNV9oqshPoI26MXzO2UlQWqE2LDFvTxSsiW97WNWEpo7bAPZDqJceEB9fDiZ1zPNaGlCiPLUcfLnN7Y9s0lJNOg4LBqTkJvvebrWcKugvgyOqFjC5GlEaHL+APuipmDVAAAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "PipelineStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

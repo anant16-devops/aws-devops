@@ -1,0 +1,21 @@
+{
+  "version": "45.0.0",
+  "files": {
+    "d3a4c4e4cebcbd0f3fad05218117ffeea3a57639e9e8bffa176b40db2643cf4f": {
+      "displayName": "DeployStack Template",
+      "source": {
+        "path": "DeployStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "837217115905-eu-north-1-ebaaa533": {
+          "bucketName": "cdk-hnb659fds-assets-837217115905-eu-north-1",
+          "objectKey": "d3a4c4e4cebcbd0f3fad05218117ffeea3a57639e9e8bffa176b40db2643cf4f.json",
+          "region": "eu-north-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::837217115905:role/cdk-hnb659fds-file-publishing-role-837217115905-eu-north-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}
