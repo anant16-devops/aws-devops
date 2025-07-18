@@ -5,13 +5,13 @@ from aws_cdk import (
 from constructs import Construct
 
 class EcrStack(Stack):
-    def __init__(self, scope: Construct, id: str, **kwargs):
+    def __init__(self, scope: Construct, id: str, repository_name, **kwargs):
         super().__init__(scope, id, **kwargs)
 
         # Create an ECR repository
         self.repository = ecr.Repository(
             self, "FlaskAppRepo",
-            repository_name="flask-nginx-app",
+            repository_name=repository_name,
             removal_policy=None  # Use DESTROY for cleanup during testing
         )
         # Output the repository URI

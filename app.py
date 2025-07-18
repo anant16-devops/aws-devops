@@ -19,7 +19,7 @@ network_stack = NetworkStack(
     env=cdk.Environment(account="837217115905", region="eu-north-1"))
 
 ecr_stack = EcrStack(
-    app, "EcrStack", stack_name="AWSEcrRepoStack",
+    app, "EcrStack", stack_name="AWSEcrRepoStack", repository_name="flask-nginx-app",
     env=cdk.Environment(account="837217115905", region="eu-north-1"))
 
 deploy_stack = DeployStack(
@@ -32,7 +32,7 @@ codepipeline_stack = PipelineStack(
     app, "PipelineStack",
     github_owner="anant16-devops",
     github_repo="aws-devops",
-    repo=ecr_stack.repository,
+    repository_name="flask-nginx-app",
     code_deploy_group=deploy_stack.codedeploy_group,
     env=cdk.Environment(account="837217115905", region="eu-north-1"), 
     

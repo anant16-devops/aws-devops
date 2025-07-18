@@ -203,9 +203,19 @@
      "ComputeType": "BUILD_GENERAL1_SMALL",
      "EnvironmentVariables": [
       {
+       "Name": "AWS_DEFAULT_REGION",
+       "Type": "PLAINTEXT",
+       "Value": "eu-north-1"
+      },
+      {
+       "Name": "AWS_ACCOUNT_ID",
+       "Type": "PLAINTEXT",
+       "Value": "837217115905"
+      },
+      {
        "Name": "REPOSITORY_URI",
        "Type": "PLAINTEXT",
-       "Value": "EcrStack/FlaskAppRepo"
+       "Value": "837217115905.dkr.ecr.eu-north-1.amazonaws.com/flask-nginx-app"
       }
      ],
      "Image": "aws/codebuild/standard:7.0",

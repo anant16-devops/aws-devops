@@ -20,7 +20,7 @@ class PipelineStack(Stack):
     def __init__(self, scope: Construct, id: str,
                  github_owner: str,
                  github_repo: str,
-                 repo: ecr.Repository,
+                 repository_name,
                  code_deploy_group,
                  **kwargs):
         super().__init__(scope, id, **kwargs)
@@ -57,7 +57,15 @@ class PipelineStack(Stack):
                 compute_type=codebuild.ComputeType.SMALL
             ),
             environment_variables={
-                "REPOSITORY_URI": codebuild.BuildEnvironmentVariable(value=repo)
+                "AWS_DEFAULT_REGION": codebuild.BuildEnvironmentVariable(
+                    value=self.region
+                ),
+                "AWS_ACCOUNT_ID": codebuild.BuildEnvironmentVariable(
+                    value=self.account
+                ),
+                "REPOSITORY_URI": codebuild.BuildEnvironmentVariable(
+                    value=f"{self.account}.dkr.ecr.{self.region}.amazonaws.com/{repository_name}"
+                )
             },
             artifacts=codebuild.Artifacts.s3(
                 bucket=artifacts_bucket,
