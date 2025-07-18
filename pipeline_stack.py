@@ -57,7 +57,7 @@ class PipelineStack(Stack):
                 compute_type=codebuild.ComputeType.SMALL
             ),
             environment_variables={
-                "REPOSITORY_URI": codebuild.BuildEnvironmentVariable(value=repo.repository_uri)
+                "REPOSITORY_URI": codebuild.BuildEnvironmentVariable(value=repo)
             },
             artifacts=codebuild.Artifacts.s3(
                 bucket=artifacts_bucket,

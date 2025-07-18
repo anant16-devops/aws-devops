@@ -169,7 +169,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::837217115905:role/cdk-hnb659fds-deploy-role-837217115905-eu-north-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::837217115905:role/cdk-hnb659fds-cfn-exec-role-837217115905-eu-north-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-837217115905-eu-north-1/99e6737bd43fcbadd6d7db269e8dab0ff5aa7060a51b736774b33e1319a3056d.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-837217115905-eu-north-1/7734831b7b6506d1643ff1d55056aabb2be42349196c5fb92f5577b98bd3a88c.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -179,7 +179,8 @@
           "arn": "arn:${AWS::Partition}:iam::837217115905:role/cdk-hnb659fds-lookup-role-837217115905-eu-north-1",
           "requiresBootstrapStackVersion": 8,
           "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
-        }
+        },
+        "stackName": "AWSEcrRepoStack"
       },
       "dependencies": [
         "EcrStack.assets"
@@ -195,18 +196,6 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "CDKMetadata"
-          }
-        ],
-        "/EcrStack/Exports/Output{\"Fn::GetAtt\":[\"FlaskAppRepoCC445EC7\",\"Arn\"]}": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "ExportsOutputFnGetAttFlaskAppRepoCC445EC7Arn13BABF42"
-          }
-        ],
-        "/EcrStack/Exports/Output{\"Ref\":\"FlaskAppRepoCC445EC7\"}": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "ExportsOutputRefFlaskAppRepoCC445EC7A8FBFD43"
           }
         ],
         "/EcrStack/BootstrapVersion": [
@@ -325,7 +314,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::837217115905:role/cdk-hnb659fds-deploy-role-837217115905-eu-north-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::837217115905:role/cdk-hnb659fds-cfn-exec-role-837217115905-eu-north-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-837217115905-eu-north-1/7e73ba975a1386edd8445d3950056b6c0c34f0a4ddd0f419bbd7df6314f0d8eb.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-837217115905-eu-north-1/ca4b301d0dfb0b9dd69c5199386aa0cd0e4435ab9c1dae7ce33786143a837c48.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -338,7 +327,6 @@
         }
       },
       "dependencies": [
-        "EcrStack",
         "DeployStack",
         "PipelineStack.assets"
       ],
@@ -372,15 +360,15 @@
             "type": "aws:cdk:warning",
             "data": "V1 pipeline type is implicitly selected when `pipelineType` is not set. If you want to use V2 type, set `PipelineType.V2`. [ack: @aws-cdk/aws-codepipeline:unspecifiedPipelineType]",
             "trace": [
-              "Annotations.addMessage (/tmp/jsii-kernel-bdeutQ/node_modules/aws-cdk-lib/core/lib/annotations.js:1:1709)",
-              "Annotations.addWarningV2 (/tmp/jsii-kernel-bdeutQ/node_modules/aws-cdk-lib/core/lib/annotations.js:1:896)",
-              "new Pipeline2 (/tmp/jsii-kernel-bdeutQ/node_modules/aws-cdk-lib/aws-codepipeline/lib/pipeline.js:1:8128)",
-              "new Pipeline2 (/tmp/jsii-kernel-bdeutQ/node_modules/aws-cdk-lib/core/lib/prop-injectable.js:1:488)",
-              "Kernel._Kernel_create (/tmp/tmpmbdslnj9/lib/program.js:548:25)",
-              "Kernel.create (/tmp/tmpmbdslnj9/lib/program.js:218:93)",
-              "KernelHost.processRequest (/tmp/tmpmbdslnj9/lib/program.js:15467:36)",
-              "KernelHost.run (/tmp/tmpmbdslnj9/lib/program.js:15427:22)",
-              "Immediate._onImmediate (/tmp/tmpmbdslnj9/lib/program.js:15428:46)",
+              "Annotations.addMessage (/tmp/jsii-kernel-BDG3cZ/node_modules/aws-cdk-lib/core/lib/annotations.js:1:1709)",
+              "Annotations.addWarningV2 (/tmp/jsii-kernel-BDG3cZ/node_modules/aws-cdk-lib/core/lib/annotations.js:1:896)",
+              "new Pipeline2 (/tmp/jsii-kernel-BDG3cZ/node_modules/aws-cdk-lib/aws-codepipeline/lib/pipeline.js:1:8128)",
+              "new Pipeline2 (/tmp/jsii-kernel-BDG3cZ/node_modules/aws-cdk-lib/core/lib/prop-injectable.js:1:488)",
+              "Kernel._Kernel_create (/tmp/tmp7gn9sokj/lib/program.js:548:25)",
+              "Kernel.create (/tmp/tmp7gn9sokj/lib/program.js:218:93)",
+              "KernelHost.processRequest (/tmp/tmp7gn9sokj/lib/program.js:15467:36)",
+              "KernelHost.run (/tmp/tmp7gn9sokj/lib/program.js:15427:22)",
+              "Immediate._onImmediate (/tmp/tmp7gn9sokj/lib/program.js:15428:46)",
               "process.processImmediate (node:internal/timers:485:21)"
             ]
           }

@@ -205,48 +205,7 @@
       {
        "Name": "REPOSITORY_URI",
        "Type": "PLAINTEXT",
-       "Value": {
-        "Fn::Join": [
-         "",
-         [
-          {
-           "Fn::Select": [
-            4,
-            {
-             "Fn::Split": [
-              ":",
-              {
-               "Fn::ImportValue": "EcrStack:ExportsOutputFnGetAttFlaskAppRepoCC445EC7Arn13BABF42"
-              }
-             ]
-            }
-           ]
-          },
-          ".dkr.ecr.",
-          {
-           "Fn::Select": [
-            3,
-            {
-             "Fn::Split": [
-              ":",
-              {
-               "Fn::ImportValue": "EcrStack:ExportsOutputFnGetAttFlaskAppRepoCC445EC7Arn13BABF42"
-              }
-             ]
-            }
-           ]
-          },
-          ".",
-          {
-           "Ref": "AWS::URLSuffix"
-          },
-          "/",
-          {
-           "Fn::ImportValue": "EcrStack:ExportsOutputRefFlaskAppRepoCC445EC7A8FBFD43"
-          }
-         ]
-        ]
-       }
+       "Value": "EcrStack/FlaskAppRepo"
       }
      ],
      "Image": "aws/codebuild/standard:7.0",

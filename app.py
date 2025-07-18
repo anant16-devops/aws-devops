@@ -19,7 +19,7 @@ network_stack = NetworkStack(
     env=cdk.Environment(account="837217115905", region="eu-north-1"))
 
 ecr_stack = EcrStack(
-    app, "EcrStack", 
+    app, "EcrStack", stack_name="AWSEcrRepoStack",
     env=cdk.Environment(account="837217115905", region="eu-north-1"))
 
 deploy_stack = DeployStack(

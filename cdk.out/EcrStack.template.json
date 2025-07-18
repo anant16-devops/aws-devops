@@ -21,27 +21,6 @@
    }
   }
  },
- "Outputs": {
-  "ExportsOutputFnGetAttFlaskAppRepoCC445EC7Arn13BABF42": {
-   "Value": {
-    "Fn::GetAtt": [
-     "FlaskAppRepoCC445EC7",
-     "Arn"
-    ]
-   },
-   "Export": {
-    "Name": "EcrStack:ExportsOutputFnGetAttFlaskAppRepoCC445EC7Arn13BABF42"
-   }
-  },
-  "ExportsOutputRefFlaskAppRepoCC445EC7A8FBFD43": {
-   "Value": {
-    "Ref": "FlaskAppRepoCC445EC7"
-   },
-   "Export": {
-    "Name": "EcrStack:ExportsOutputRefFlaskAppRepoCC445EC7A8FBFD43"
-   }
-  }
- },
  "Parameters": {
   "BootstrapVersion": {
    "Type": "AWS::SSM::Parameter::Value<String>",
