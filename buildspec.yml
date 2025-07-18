@@ -14,4 +14,10 @@ phases:
     commands:
       - echo Pushing the Docker image...
       - docker push ${REPOSITORY_URI}:latest
+      - mkdir -p output
+      - echo "Build complete" > output/BUILD_INFO.txt
+
+artifacts:
+  files:
+    - output/*
 
