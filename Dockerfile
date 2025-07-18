@@ -4,12 +4,12 @@ FROM python:3.9-slim
 WORKDIR /app
 
 # Install dependencies
-COPY my-flask-app/requirements.txt .
+COPY my-flask-app/app/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy app and NGINX config
 COPY my-flask-app/app/ /app/
-COPY my-flask-app/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
 
 # Install NGINX
 RUN apt-get update && \
