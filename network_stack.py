@@ -6,7 +6,7 @@ from aws_cdk import (
 from constructs import Construct
 
 class NetworkStack(Stack):
-    def __init__(self, scope: Construct, id: str, **kwargs):
+    def __init__(self, scope: Construct, id: str, github_repo: str, **kwargs):
         super().__init__(scope, id, **kwargs)
 
         # Create a VPC with 1 public subnet
@@ -54,14 +54,16 @@ class NetworkStack(Stack):
             machine_image=ami,
             vpc=self.vpc,
             security_group=self.sg,
-            role=self.role
-        )
+            role=self.role,
+            key_name="demo-devops-key"
+            )
         # User data to install Docker and run the container
         self.instance.user_data.add_commands(
-            "yum update -y",
-            "amazon-linux-extras install docker -y",
-            "service docker start",
-            "usermod -a -G docker ec2-user",
-            "docker pull 837217115905.dkr.ecr.eu-north-1.amazonaws.com/my-flask-app:latest",
-            "docker run -d -p 80:80 837217115905.dkr.ecr.eu-north-1.amazonaws.com/my-flask-app:latest"
+            "sudo yum update -y",
+            "sudo yum install -y docker",
+            "sudo service docker start",
+            "sudo usermod -a -G docker ec2-user",
+            "aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 837217115905.dkr.ecr.eu-north-1.amazonaws.com",
+            f"docker pull 837217115905.dkr.ecr.eu-north-1.amazonaws.com/{github_repo}:latest",
+            f"docker run -d -p 80:80 837217115905.dkr.ecr.eu-north-1.amazonaws.com/{github_repo}:latest"
         )

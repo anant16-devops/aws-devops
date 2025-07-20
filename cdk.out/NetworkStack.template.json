@@ -305,6 +305,7 @@
      "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamznamihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter"
     },
     "InstanceType": "t3.micro",
+    "KeyName": "demo-devops-key",
     "SecurityGroupIds": [
      {
       "Fn::GetAtt": [
@@ -323,7 +324,7 @@
      }
     ],
     "UserData": {
-     "Fn::Base64": "#!/bin/bash\nyum update -y\namazon-linux-extras install docker -y\nservice docker start\nusermod -a -G docker ec2-user\ndocker pull 837217115905.dkr.ecr.eu-north-1.amazonaws.com/my-flask-app:latest\ndocker run -d -p 80:80 837217115905.dkr.ecr.eu-north-1.amazonaws.com/my-flask-app:latest"
+     "Fn::Base64": "#!/bin/bash\nsudo yum update -y\nsudo yum install -y docker\nsudo service docker start\nsudo usermod -a -G docker ec2-user\ndocker pull 837217115905.dkr.ecr.eu-north-1.amazonaws.com/my-flask-app:latest\ndocker run -d -p 80:80 837217115905.dkr.ecr.eu-north-1.amazonaws.com/my-flask-app:latest"
     }
    },
    "DependsOn": [
